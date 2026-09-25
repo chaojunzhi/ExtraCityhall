@@ -1,10 +1,6 @@
 # ExtraCityHall（扩展市政厅）
 
-Minecraft Forge 1.20.1 的 **MineColonies** 附属模组。
-
-- **作者**：zhaojunzhi
-- **许可**：GNU General Public License v3.0（GPL-3.0），详见 [`LICENSE`](./LICENSE)
-- **运行平台**：Minecraft 1.20.1 / Forge 47.1.3 / Java 17
+Minecraft Forge 1.20.1 的 **MineColonies** 附属模组，解决原版自动分配工作分配不是很理想与给了一个新职业以及工作获得XP以提升属性的机制。
 
 ## 功能概览
 
@@ -13,7 +9,7 @@ Minecraft Forge 1.20.1 的 **MineColonies** 附属模组。
 - **经验系统**：被动工作经验曲线（与经验球无关），受住宅等级与技能等级约束。
 - **职业最优自动分配**：基于最小费用最大流（SPFA）的市民↔职业最优匹配，支持每殖民地设置职业优先级与分配模式（原版 / 仅失业 / 全体最优），可在夜晚周期性自动重排。
 
-## 依赖（运行时，需玩家另行安装）
+## 依赖
 
 | 模组 | 版本 | 许可 |
 | --- | --- | --- |
@@ -24,7 +20,7 @@ Minecraft Forge 1.20.1 的 **MineColonies** 附属模组。
 
 本模组仅以**运行时依赖**方式使用上述模组（调用其公开 API，不打包、不分发其代码或二进制），符合 GPL-3.0 的"聚合/独立作品"关系；本模组自身源码以 GPL-3.0 发布。
 
-## 衍生资源署名
+## 衍生资源
 
 以下贴图为 **MineColonies（ldtteam）的衍生作品**，依据 GPL-3.0 随本模组再分发并保持相同许可，特此署名：
 
@@ -34,27 +30,6 @@ src/main/resources/assets/minecolonies/textures/entity/citizen/default/secretary
 ```
 
 这些贴图由 `tools/gen_secretary_skins.py` 采样 MineColonies 原版市民贴图（`citizenmale1_b` / `citizenfemale1_b`）生成，版权归属 ldtteam，本模组在此基础上以 GPL-3.0 再分发。
-
-## 构建
-
-```bash
-# 客户端运行 / 服务端运行 / 资源生成
-./gradlew runClient
-./gradlew runServer
-./gradlew runData
-
-# 打包（生成 build/libs/extracityhall-<version>.jar）
-./gradlew build
-```
-
-构建要求：Java 17（`gradle.properties` 中已指定 `org.gradle.java.home`）。
-
-## 目录说明
-
-- `src/main/`：模组源码与资源（语言文件、GUI、模型、书记贴图）。
-- `tools/`：资源生成工具（`gen_secretary_skins.py` 生成书记贴图，`TexGen.java` 处理图标去背）。
-  - `tools/_ref/`、`tools/ref/`：**未纳入版本控制**（`.gitignore` 已排除），其中为从 MineColonies jar 抽取的原版参考贴图（ldtteam 版权），仅本地重跑生成器时引用。
-- `LICENSE`：GPL-3.0 全文。
 
 ## 配置
 
