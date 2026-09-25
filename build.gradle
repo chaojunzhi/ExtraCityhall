@@ -1,0 +1,128 @@
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+}
+
+version = "${mod_version}"
+group = "${mod_group}"
+base {
+    archivesName = "${mod_id}"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of("${java_version}")
+
+println "Java: ${System.getProperty('java.version')} (${System.getProperty('java.vm.vendor')})"
+println "JVM: ${System.getProperty('java.vm.name')}"
+
+minecraft {
+    mappings channel: "${mappings_channel}", version: "${minecraft_version}"
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
+        }
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
+        }
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', "${mod_id}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            mods {
+                "${mod_id}" {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+    // ldtteam 官方 Maven (blockui / structurize / domum-ornamentum)
+    maven {
+        name = 'ldtteam'
+        url = 'https://ldtteam.jfrog.io/ldtteam/modding/'
+    }
+    // CurseForge Maven（备用兜底源：官方 ldtteam Maven 不可用时启用）
+    maven {
+        name = 'CurseMaven'
+        url = 'https://www.cursemaven.com'
+        content {
+            includeGroup 'curse.maven'
+        }
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    // --- 全部走 ldtteam 官方 Maven (坐标与版本均已验证存在) ---
+    // MineColonies 1.1.605-BETA (编译期 API + runClient 运行)
+    implementation fg.deobf("com.ldtteam:minecolonies:${minecolonies_version}")
+    // BlockUI 1.0.139-BETA (GUI 框架)
+    implementation fg.deobf("com.ldtteam:blockui:${blockui_version}")
+    // Structurize 1.0.740-BETA (minecolonies 强制依赖, 运行时需要)
+    implementation fg.deobf("com.ldtteam:structurize:${structurize_version}")
+    // Domum-Ornamentum 1.0.184-BETA (minecolonies 强制依赖; 官方仓库 jar 带 universal classifier)
+    runtimeOnly fg.deobf("com.ldtteam:domum_ornamentum:${domum_version}:universal")
+}
+
+jar {
+    manifest {
+        attributes([
+            "Specification-Title"     : "${mod_id}",
+            "Specification-Vendor"    : "${mod_id}",
+            "Specification-Version"   : "1",
+            "Implementation-Title"    : project.name,
+            "Implementation-Version"  : project.jar.archiveVersion,
+            "Implementation-Vendor"   : "${mod_id}",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+jar.finalizedBy('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
+
+processResources {
+    // 将 mods.toml 的 ${version} 占位替换为 gradle.properties 中的 mod_version，
+    // 避免版本号在 mods.toml 与 gradle.properties 之间漂移。
+    filesMatching('META-INF/mods.toml') {
+        expand version: project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

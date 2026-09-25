@@ -1,0 +1,197 @@
+<window size="524 243" pause="false" lightbox="false">
+
+    <!-- 书本背景 -->
+    <image source="minecolonies:textures/gui/townhall_book.png" pos="75 0" size="374 243"/>
+
+    <!-- ============ 分页内容：第 1 页 就业(总览/建筑) / 第 2 页 市政厅管理(书记) ============
+         switch id="pages" 会被 AbstractWindowSkeleton 自动绑定 nextPage/prevPage/pageNum 翻页按钮。
+         switch 铺满整个窗口(pos 0 0)以便页内元素沿用原绝对坐标。 -->
+    <switch id="pages" size="524 243" pos="0 0">
+
+        <!-- ========= 第 1 页：就业 ========= -->
+        <view id="pageEmployment">
+            <label id="contentTitle" size="130 11" color="black" pos="276 28" textalign="MIDDLE_LEFT"/>
+            <label id="infoLine" size="120 11" color="black" pos="276 44" textalign="MIDDLE_LEFT" textscale="0.8"/>
+
+            <list id="citizenList" size="145 130" pos="276 62">
+                <view size="100% 30">
+                    <box size="100% 30" linewidth="1">
+                        <label id="citizenName" size="88 11" color="black" pos="4 3" textalign="MIDDLE_LEFT"/>
+                        <label id="citizenJob" size="135 11" color="blue" pos="4 17" textalign="MIDDLE_LEFT"/>
+                        <buttonimage id="fire" size="15 15" pos="98 7"
+                                     source="extracityhall:textures/gui/employment_fire.png"
+                                     tooltip="$(gui.extracityhall.employment.fire)"/>
+                        <buttonimage id="hire" size="15 15" pos="116 7"
+                                     source="extracityhall:textures/gui/employment_hire.png"
+                                     tooltip="$(gui.extracityhall.employment.hire)"/>
+                    </box>
+                </view>
+            </list>
+
+            <!-- 左侧：殖民地地图（常驻，以市政厅位置为原点）
+                 静态轴/标签固定，动态色点由 renderMap() 生成到 mapLayer；+X 向右、+Z 向下 -->
+            <view id="mapPane" size="170 170" pos="90 62">
+                <image id="mapAxisH" pos="19 85" size="132 1" source="extracityhall:textures/gui/gray_pixel.png"/>
+                <image id="mapAxisV" pos="85 19" size="1 132" source="extracityhall:textures/gui/gray_pixel.png"/>
+                <label id="mapAxisXLabel" size="16 8" color="gray" pos="149 87" textalign="MIDDLE_LEFT" textscale="0.6" label="E"/>
+                <label id="mapAxisZLabel" size="16 8" color="gray" pos="87 11" textalign="MIDDLE_LEFT" textscale="0.6" label="N"/>
+                <view id="mapLayer" size="100% 100%" pos="0 0"/>
+            </view>
+
+            <!-- 最优分配：本模组接管原版自动分配逻辑（职业优先级入口已移至第 2 页右侧） -->
+            <buttonimage id="optimizeAssign" size="145 17" pos="276 196" textcolor="black"
+                         source="minecolonies:textures/gui/builderhut/builder_button_medium_large.png"
+                         label="$(gui.extracityhall.employment.optimize)"
+                         tooltip="$(gui.extracityhall.employment.optimize.tip)"/>
+        </view>
+
+        <!-- ========= 第 2 页：市政厅管理（书记） ========= -->
+        <view id="pageSecretary">
+            <!-- 左页：市政厅 + 等级标题，标题行右侧为重命名 / 物品栏汇总 -->
+            <label id="secretaryTitle" size="110 11" color="black" pos="106 44" textalign="MIDDLE_LEFT"/>
+            <buttonimage id="editName" size="15 15" pos="205 41"
+                         source="minecolonies:textures/gui/builderhut/edit.png"
+                         tooltip="$(com.minecolonies.gui.edit)"/>
+            <buttonimage id="allinventory" size="17 17" pos="225 41"
+                         source="minecolonies:textures/gui/chest.png"
+                         tooltip="$(com.minecolonies.core.building.inv_sum)"/>
+
+            <!-- 左页：在岗书记 -->
+            <label id="secretaryCitizens" size="158 11" pos="106 62" color="black" textalign="MIDDLE_LEFT"/>
+
+            <!-- 左页：操作按钮自上而下堆叠（同原版工人小屋动作页布局） -->
+            <buttonimage id="workerHire" size="129 17" pos="106 80" textcolor="black"
+                         source="minecolonies:textures/gui/builderhut/builder_button_medium_large.png"
+                         label="$(com.minecolonies.coremod.gui.workerhuts.manage)"/>
+            <buttonimage id="recall" size="129 17" pos="106 100" textcolor="black"
+                         source="minecolonies:textures/gui/builderhut/builder_button_medium_large.png"
+                         label="$(com.minecolonies.coremod.gui.workerhuts.recall)"/>
+            <buttonimage id="neededResourcesBtn" size="129 17" pos="106 120" textcolor="black"
+                         source="minecolonies:textures/gui/builderhut/builder_button_medium_large.png"
+                         label="$(gui.extracityhall.secretary.resources)"/>
+            <buttonimage id="minstock" size="129 17" pos="106 140" textcolor="black"
+                         source="minecolonies:textures/gui/builderhut/builder_button_medium_large.png"
+                         label="$(gui.extracityhall.secretary.minstock)"/>
+
+            <!-- 左页：取货优先级（标签 + 数值 + 减/加，同一行；减/加右缘与上下按钮列 235 对齐） -->
+            <label size="70 11" pos="106 167" color="black" textalign="MIDDLE_LEFT" label="$(com.minecolonies.coremod.gui.workerhuts.buildprio)"/>
+            <label id="prioValue" size="26 11" pos="178 167" textalign="MIDDLE_LEFT" color="black"/>
+            <buttonimage id="deliveryPrioDown" size="14 15" pos="205 165" textcolor="black"
+                         source="minecolonies:textures/gui/builderhut/builder_button_mini.png" label="-"/>
+            <buttonimage id="deliveryPrioUp" size="14 15" pos="221 165" textcolor="black"
+                         source="minecolonies:textures/gui/builderhut/builder_button_mini.png" label="+"/>
+
+            <!-- 左页：请求立即取货（复用原版行为与语言键） -->
+            <buttonimage id="requestPickup" size="129 17" pos="106 187" textcolor="black"
+                         source="minecolonies:textures/gui/builderhut/builder_button_medium_large.png"
+                         label="$(com.minecolonies.coremod.gui.workerhuts.forcepickup)"/>
+
+            <!-- 右页：分配模式（点击在 原版/未就业最优/全体最优 间循环）+ 职业优先级入口 -->
+            <label size="120 11" pos="276 44" color="black" textalign="MIDDLE_LEFT"
+                   label="$(gui.extracityhall.employment.assignmode)"/>
+            <buttonimage id="assignMode" size="145 17" pos="276 58" textcolor="black"
+                         source="minecolonies:textures/gui/builderhut/builder_button_medium_large.png"
+                         tooltip="$(gui.extracityhall.employment.assignmode.tip)"/>
+            <buttonimage id="jobPriority" size="145 17" pos="276 80" textcolor="black"
+                         source="minecolonies:textures/gui/builderhut/builder_button_medium_large.png"
+                         label="$(gui.extracityhall.employment.priority)"
+                         tooltip="$(gui.extracityhall.employment.priority.tip)"/>
+
+            <!-- 右页：右下角红蜡「帮助」按钮，点击打开书记帮助 GUI -->
+            <buttonimage id="info" size="17 17" pos="408 200"
+                         source="minecolonies:textures/gui/red_wax_information.png"
+                         tooltip="$(com.minecolonies.core.building.help)"/>
+        </view>
+    </switch>
+
+    <!-- ============ 顶部标题栏：紫色缎带（位置/尺寸/样式同原版展开缎带 bookmark_ribbon_01，文字=就业） ============ -->
+    <buttonimage id="titleRibbon" pos="58 43" size="204 17"
+                 source="minecolonies:textures/gui/bookmark_ribbon_01.png"
+                 label="$(gui.extracityhall.employment.tab)"
+                 textalign="MIDDLE_LEFT" textcolor="White" textoffset="35 2"/>
+
+    <!-- ============ 导航外壳：与原版 windowtownhall.xml 完全一致（7 个书签） ============ -->
+    <image id="actions0" pos="56 73" size="31 14" source="minecolonies:textures/gui/bookmark_short_ribbon_01.png"/>
+    <image id="infopage0" pos="56 97" size="31 14" source="minecolonies:textures/gui/bookmark_short_ribbon_02.png"/>
+    <image id="permissions0" pos="56 121" size="31 14" source="minecolonies:textures/gui/bookmark_short_ribbon_03.png"/>
+    <image id="citizens0" pos="56 145" size="31 14" source="minecolonies:textures/gui/bookmark_short_ribbon_04.png"/>
+    <image id="happiness0" pos="56 169" size="31 14" source="minecolonies:textures/gui/bookmark_short_ribbon_05.png"/>
+    <image id="alliances0" pos="56 193" size="31 14" source="minecolonies:textures/gui/bookmark_short_ribbon_06.png"/>
+    <image id="settings0" pos="56 217" size="31 14" source="minecolonies:textures/gui/bookmark_short_ribbon_06.png"/>
+
+    <buttonimage id="actions1" size="204 17" pos="58 43" source="minecolonies:textures/gui/bookmark_ribbon_01.png" visible="false"
+                 label="$(com.minecolonies.coremod.gui.townhalltab.actions)"
+                 textalign="MIDDLE_LEFT" textoffset="35 2" textcolor="White" textdisabledcolor="DarkGray"/>
+    <buttonimage id="infopage1" size="204 17" pos="58 43" source="minecolonies:textures/gui/bookmark_ribbon_02.png" visible="false"
+                 label="$(com.minecolonies.coremod.gui.townhalltab.information)"
+                 textalign="MIDDLE_LEFT" textoffset="35 2" textcolor="White" textdisabledcolor="DarkGray"/>
+    <buttonimage id="permissions1" size="204 17" pos="58 43" source="minecolonies:textures/gui/bookmark_ribbon_03.png" visible="false"
+                 label="$(com.minecolonies.coremod.gui.townhalltab.permissions)"
+                 textalign="MIDDLE_LEFT" textoffset="35 2" textcolor="White" textdisabledcolor="DarkGray"/>
+    <buttonimage id="citizens1" size="204 17" pos="58 43" source="minecolonies:textures/gui/bookmark_ribbon_04.png" visible="false"
+                 label="$(com.minecolonies.coremod.gui.townhalltab.citizens)"
+                 textalign="MIDDLE_LEFT" textoffset="35 2" textcolor="White" textdisabledcolor="DarkGray"/>
+    <buttonimage id="happiness1" size="204 17" pos="58 43" source="minecolonies:textures/gui/bookmark_ribbon_05.png" visible="false"
+                 label="$(com.minecolonies.coremod.gui.townhalltab.stats)"
+                 textalign="MIDDLE_LEFT" textoffset="35 2" textcolor="White" textdisabledcolor="DarkGray"/>
+    <buttonimage id="alliances1" size="204 17" pos="58 43" source="minecolonies:textures/gui/bookmark_ribbon_06.png" visible="false"
+                 label="$(com.minecolonies.coremod.gui.townhalltab.alliances)"
+                 textalign="MIDDLE_LEFT" textoffset="35 2" textcolor="White" textdisabledcolor="DarkGray"/>
+    <buttonimage id="settings1" size="204 17" pos="58 43" source="minecolonies:textures/gui/bookmark_ribbon_06.png" visible="false"
+                 label="$(com.minecolonies.coremod.gui.townhalltab.settings)"
+                 textalign="MIDDLE_LEFT" textoffset="35 2" textcolor="White" textdisabledcolor="DarkGray"/>
+
+    <buttonimage id="actionsExt" pos="-17 73" size="104 14" source="minecolonies:textures/gui/bookmark_medium_ribbon_01.png" visible="false"
+                 label="$(com.minecolonies.coremod.gui.townhalltab.actions)"
+                 textalign="MIDDLE_LEFT" textcolor="White" textoffset="8 1"/>
+    <buttonimage id="infoExt" pos="-17 97" size="104 14" source="minecolonies:textures/gui/bookmark_medium_ribbon_02.png" visible="false"
+                 label="$(com.minecolonies.coremod.gui.townhalltab.information)"
+                 textalign="MIDDLE_LEFT" textcolor="White" textoffset="8 1"/>
+    <buttonimage id="permissionsExt" pos="-17 121" size="104 14" source="minecolonies:textures/gui/bookmark_medium_ribbon_03.png" visible="false"
+                 label="$(com.minecolonies.coremod.gui.townhalltab.permissions)"
+                 textalign="MIDDLE_LEFT" textcolor="White" textoffset="8 1"/>
+    <buttonimage id="citizensExt" pos="-17 145" size="104 14" source="minecolonies:textures/gui/bookmark_medium_ribbon_04.png" visible="false"
+                 label="$(com.minecolonies.coremod.gui.townhalltab.citizens)"
+                 textalign="MIDDLE_LEFT" textcolor="White" textoffset="8 1"/>
+    <buttonimage id="happinessExt" pos="-17 169" size="104 14" source="minecolonies:textures/gui/bookmark_medium_ribbon_05.png" visible="false"
+                 label="$(com.minecolonies.coremod.gui.townhalltab.stats)"
+                 textalign="MIDDLE_LEFT" textcolor="White" textoffset="8 1"/>
+    <buttonimage id="alliancesExt" pos="-17 193" size="104 14" source="minecolonies:textures/gui/bookmark_medium_ribbon_06.png" visible="false"
+                 label="$(com.minecolonies.coremod.gui.townhalltab.alliances)"
+                 textalign="MIDDLE_LEFT" textcolor="White" textoffset="8 1"/>
+    <buttonimage id="settingsExt" pos="-17 217" size="104 14" source="minecolonies:textures/gui/bookmark_medium_ribbon_06.png" visible="false"
+                 label="$(com.minecolonies.coremod.gui.townhalltab.settings)"
+                 textalign="MIDDLE_LEFT" textcolor="White" textoffset="8 1"/>
+
+    <buttonimage id="actions" size="17 17" pos="62 71" onHoverId="actionsExt"
+                 source="minecolonies:textures/gui/red_wax_home.png"/>
+    <buttonimage id="infopage" size="17 17" pos="62 95" onHoverId="infoExt"
+                 source="minecolonies:textures/gui/red_wax_work_orders.png"/>
+    <buttonimage id="permissions" size="17 17" pos="62 119" onHoverId="permissionsExt"
+                 source="minecolonies:textures/gui/red_wax_permissions.png"/>
+    <buttonimage id="citizens" size="17 17" pos="62 143" onHoverId="citizensExt"
+                 source="minecolonies:textures/gui/red_wax_citizens.png"/>
+    <buttonimage id="happiness" size="17 17" pos="62 167" onHoverId="happinessExt"
+                 source="minecolonies:textures/gui/red_wax_stats.png"/>
+    <buttonimage id="alliances" size="17 17" pos="62 191" onHoverId="alliancesExt"
+                 source="minecolonies:textures/gui/red_wax_information.png"/>
+    <buttonimage id="settings" size="17 17" pos="62 215" onHoverId="settingsExt"
+                 source="minecolonies:textures/gui/red_wax_settings.png"/>
+
+    <!-- ============ 右侧：就业书签（当前页高亮，方向为右侧镜像；hover 展开「就业」缎带） ============ -->
+    <image id="employment0Right" pos="437 73" size="31 14" visible="false"
+           source="extracityhall:textures/gui/bookmark_short_ribbon_right_01.png"/>
+    <buttonimage id="employmentExt" pos="341 73" size="104 14" visible="false"
+                 source="extracityhall:textures/gui/bookmark_medium_ribbon_right_01.png"
+                 label="$(gui.extracityhall.employment.tab)"
+                 textalign="MIDDLE_LEFT" textcolor="White" textoffset="8 1"/>
+    <buttonimage id="employment" size="17 17" pos="445 71" onHoverId="employmentExt" enabled="false" visible="false"
+                 source="extracityhall:textures/gui/red_wax_employment.png"
+                 tooltip="$(gui.extracityhall.employment.tab)"/>
+
+    <!-- ============ 翻页按钮：替代原 ↺ 切换建筑按钮（照搬原版 windowtownhall 翻页机制） ============
+         nextPage 位于原 cycleView 位置(404 28)，prevPage 镜像放标题行左端；
+         不放 pageNum 页码标签（骨架类对其判空，缺失时不显示页码） -->
+    <buttonimage id="prevPage" size="18 10" pos="100 28" source="minecolonies:textures/gui/builderhut/turn_page_left.png"/>
+    <buttonimage id="nextPage" size="18 10" pos="404 28" source="minecolonies:textures/gui/builderhut/turn_page_right.png"/>
+</window>

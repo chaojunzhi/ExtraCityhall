@@ -1,0 +1,45 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="GPL-3.0"
+issueTrackerURL=""
+
+[[mods]]
+modId="extracityhall"
+version="${version}"
+displayName="ExtraCityHall"
+authors="zhaojunzhi"
+description='''
+扩展市政厅 (ExtraCityHall) - MineColonies 附属模组。
+手持普通书右键市政厅方块可将其转化为「绿皮书」。
+绿皮书右键殖民地任意建筑即可绑定殖民地(NBT 记录 colony id + dimension),
+空中右键直接打开 MineColonies 原版市政厅管理 GUI(与原版右键市政厅方块行为一致),
+并为所有市政厅分页窗口附加「就业」书签。
+'''
+
+[[dependencies.extracityhall]]
+    modId="forge"
+    mandatory=true
+    versionRange="[46,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.extracityhall]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1,1.21)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.extracityhall]]
+    modId="minecolonies"
+    mandatory=true
+    versionRange="[1.20.1,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.extracityhall]]
+    modId="blockui"
+    mandatory=false
+    versionRange="[1.20.1,)"
+    ordering="NONE"
+    side="BOTH"

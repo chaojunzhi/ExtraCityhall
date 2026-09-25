@@ -1,0 +1,31 @@
+# Gradle / 构建产物
+build/
+.gradle/
+bin/
+
+# 运行目录（runClient / runServer 生成）
+run/
+
+# 数据生成输出
+src/generated/
+
+# 本地发布仓库（publishing 任务）
+mcmodsrepo/
+
+# 日志
+*.log
+
+# IDE
+*.iml
+.idea/
+.settings/
+.project
+.classpath
+
+# 操作系统
+Thumbs.db
+.DS_Store
+
+# 第三方参考资源（从 MineColonies jar 抽取的原版贴图，ldtteam 版权，不应入库）
+tools/_ref/
+tools/ref/
