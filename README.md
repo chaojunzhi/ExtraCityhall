@@ -33,3 +33,8 @@ src/main/resources/assets/minecolonies/textures/entity/citizen/default/secretary
 
 经验与自动重排参数见游戏内 `config/exhConfig.cfg`（修改后重启生效）：
 `baseXpB`、`settleIntervalTicks`、`cutoffRatio`、`autoAssignEnabled`、`autoAssignPeriodDays`。
+
+## 其他
+
+你说的对，但是《模拟殖民地》是由米哈游自主Minecolonies团队研发的经营类Minecraft的模组。游戏发生在一个被称作「minecraft:overworld」的幻想维度，在这里，被神选中的人将被授予「建筑权杖」，导引幸福度之力。你将扮演一位名为「殖民长官」的神秘角色，在自由的旅行中邂逅性格各异、能力独特的同伴们，和他们一起击败强敌，找回失散的亲人——同时，逐步发掘「自动化」的真相。
+Thanks for creating such a interesting mod like MineColonies.
